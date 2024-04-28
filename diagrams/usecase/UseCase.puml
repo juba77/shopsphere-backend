@@ -1,0 +1,45 @@
+@startuml
+left to right direction
+
+actor Client <<Primary>> as Customer
+actor Administrateur <<Secondary>> as Admin
+actor Banque <<Secondary>> as Bank
+
+
+rectangle "Site de vente Shop Sphere" {
+    usecase "S'inscrire" as UC1
+    usecase "Consulter un article" as UC2
+    usecase "Parcourir les articles" as UC4
+    usecase "Se connecter" as UC5
+    usecase "Se déconnecter" as UC6
+    usecase "Modifier ses informations personnelles" as UC7
+    usecase "Gérer son panier" as UC9
+    usecase "Ajouter un article au panier" as UC12
+    usecase "Supprimer un article du panier" as UC13
+    usecase "Valider le panier" as UC14
+    usecase "Gérer le stock" as UC15
+    usecase "Payer par CB" as UC16
+    usecase "Valider le paiement" as UC17
+}
+
+UC7 ...> UC5: <<include>>
+UC9 ..> UC5: <<include>>
+UC12 ...> UC9: <<extend>>
+UC12 ...> UC15: <<include>> Vérifier la disponibilité
+UC13 ...> UC9: <<extend>>
+UC14 ...> UC9: <<extend>>
+UC14 ...> UC16: <<include>>
+UC16 ...> UC17: <<include>> Solde > prix d'achat
+
+Customer -> UC5
+Customer -> UC6
+Customer -> UC1
+Customer -> UC2
+Customer -> UC7
+Customer -> UC9
+Customer -> UC4
+
+Admin -> UC15
+
+Bank --> UC17
+@enduml

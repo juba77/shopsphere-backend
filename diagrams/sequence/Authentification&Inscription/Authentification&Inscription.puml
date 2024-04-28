@@ -1,0 +1,68 @@
+@startuml
+
+title Création de compte et inscription d'un client
+
+skinparam BoxPadding 10
+skinparam sequenceArrowThickness 1.5
+skinparam roundcorner 15
+skinparam NoteBackgroundColor palegreen
+skinparam NoteBorderColor black
+
+actor "Client" as U
+note over U: L'utilisateur décide de se connecter \navec des faux éléments
+
+box "Shop Sphere" #LightGrey
+    participant "GestionAuthentification" as GA
+end box
+participant "Base de données" as DB
+
+loop "Essayer de nouveau"
+GA -> U: demander les infos
+activate U
+activate GA
+deactivate GA
+
+U -> GA: saisir (email, mot-de-passe)
+activate GA
+
+GA -> DB: envoyer les details (email, mot-de-passe)
+activate DB
+DB --> GA: reconnaissance
+deactivate DB
+
+GA --> GA: verifier
+activate GA
+deactivate GA
+
+GA --> U: échec de la connexion
+
+deactivate GA
+deactivate U
+end loop
+
+
+
+note over U: L'utilisateur décide de s'inscrire
+
+U -> GA: accéder à la page d'inscription
+U -> GA: entrer les informations pour l'inscription
+
+GA --> GA: verifier
+activate GA
+deactivate GA
+
+GA -> DB: enregistrer les informations renseignées
+DB --> GA: confirmer l'inscription
+GA --> U: rediriger vers la page de connexion \navec un message de succès
+
+U -> GA: effectuer un nouvel essai
+activate GA
+
+deactivate U
+GA --> U: connexion réussie
+activate U
+U --> GA: accès à l'application
+activate GA
+deactivate U
+
+@enduml

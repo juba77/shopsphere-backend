@@ -1,0 +1,51 @@
+@startuml
+abstract class Utilisateur {
+  - id: Int
+  - prenom: String
+  - nom: String
+  - email: String
+  - motDePasse: String
+
+  + seConnecter(email: String,motDePasse: String): Bool
+  + seDonnecter(id: Int): Bool
+}
+
+class Administrateur extends Utilisateur{
+  + changerQuantite(article: Article, quantite: Int): Void
+}
+
+class Client extends Utilisateur {
+  - adresse: String
+
+  + sInscrire(): Bool
+  + ajouterAuPanier(article: Article): Bool
+  + enleverDuPanier(article: Article): Bool
+  + modifierPrenom(prenom: String): Void
+  + modifierNom(nom: String): Void
+  + modifierEmail(email: String): Void
+  + modifierMotDePasse(mdp: String): Void
+  + modifierAdresse(adresse: String): Void
+  + validerLePanier(CB: cb): Bool
+}
+
+class Article {
+   - image: String
+   - titre: String
+   - prix: Double
+   - description: String
+   - quantite: Number
+}
+
+class Commande {
+   - numero: String
+   - articles: List<Article>
+   - client: Client
+   - estFinalisee: Bool
+   - date: Date
+}
+
+Administrateur "0..1" --> "0..n" Article : "Modifier"
+Commande "0..n" o-- "1" Client : "Passer"
+Commande "0..n" *-->"1..n" Article : "Contient"
+
+@enduml

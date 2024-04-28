@@ -1,0 +1,362 @@
+openapi: 3.0.1
+info:
+  title: API ShopSphere
+  description: Web services for the ShopSphere store resources
+  version: 1.0.0
+servers:
+  - url: "http://localhost:8080"
+paths:
+  "/api/login":
+    post:
+      tags:
+        - login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginDTO"
+      responses:
+        "200":
+          description: "Connected"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserConnectedDTO"
+        "400":
+          description: "Bad request"
+
+  "/api/buyers":
+    get:
+      tags:
+        - buyers
+      summary: "Find all buyers"
+      operationId: getBuyers
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BuyerDTO"
+        "204":
+          description: "No buyer found"
+        "400":
+          description: "Bad request"
+    post:
+      tags:
+        - buyers
+      summary: "Create a new buyer"
+      operationId: createBuyer
+      requestBody:
+        description: "The new buyer to create"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BuyerDTO"
+      responses:
+        "201":
+          description: "Buyer created"
+          content:
+            application/json:
+              schema:
+                title: "idBuyer"
+                type: object
+                properties:
+                  idBuyer:
+                    type: integer
+                    format: int64
+        "400":
+          description: "Bad request"
+    put:
+      tags:
+        - buyers
+      summary: "Update a buyer"
+      operationId: updateBuyer
+      requestBody:
+        description: "The new information to update on the buyer"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BuyerDTO"
+      responses:
+        "204":
+          description: "Buyer updated"
+        "400":
+          description: "Bad request"
+  "/api/buyers/{idBuyer}":
+    get:
+      tags:
+        - buyers
+      summary: "Find a buyer by id"
+      operationId: getBuyer
+      parameters:
+        - name: idBuyer
+          in: path
+          description: "The id of the buyer to find"
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BuyerDTO"
+        "204":
+          description: "No buyer found"
+        "400":
+          description: "Bad request"
+
+  "/api/admins/{idAdmin}":
+    get:
+      tags:
+        - admins
+      summary: "Find an admin by id"
+      operationId: getAdmin
+      parameters:
+        - name: idAdmin
+          in: path
+          description: "The id of the admin to find"
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDTO"
+        "204":
+          description: "No Admin found"
+        "400":
+          description: "Bad request"
+
+  "/api/products":
+    get:
+      tags:
+        - products
+      summary: "Find all products"
+      operationId: getProducts
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductDTO"
+        "204":
+          description: "No product found"
+        "400":
+          description: "Bad request"
+    put:
+      tags:
+        - products
+      summary: "Update a product"
+      operationId: updateProduct
+      requestBody:
+        description: "The new information to update on the product"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductDTO"
+      responses:
+        "204":
+          description: "Product updated"
+        "400":
+          description: "Bad request"
+  "/api/products/{idProduct}":
+    get:
+      tags:
+        - products
+      summary: "Find a product by id"
+      operationId: getProduct
+      parameters:
+        - name: idProduct
+          in: path
+          description: "The id of the product to find"
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDTO"
+        "204":
+          description: "No product found"
+        "400":
+          description: "Bad request"
+
+  "/api/orders/byBuyer/{buyerId}":
+    get:
+      tags:
+        - orders
+      summary: "Find all orders of the buyer"
+      operationId: getOrders
+      parameters:
+        - name: buyerId
+          in: path
+          description: "The id of the buyer owning commands"
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderDTO"
+        "204":
+          description: "No order found"
+        "400":
+          description: "Bad request"
+
+  "/api/orders":
+    post:
+      tags:
+        - orders
+      summary: "Create a new order"
+      operationId: createOrder
+      requestBody:
+        description: "The new order to create"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderDTO"
+      responses:
+        "201":
+          description: "Order created"
+          content:
+            application/json:
+              schema:
+                title: "idOrder"
+                type: object
+                properties:
+                  idOrder:
+                    type: integer
+                    format: int64
+
+        "400":
+          description: "Bad request"
+
+components:
+  schemas:
+    BuyerDTO:
+      allOf:
+        - $ref: "#/components/schemas/AdminDTO"
+        - type: object
+          required:
+            - address
+          properties:
+            address:
+              type: string
+
+    AdminDTO:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
+    ProductDTO:
+      type: object
+      required:
+        - photo
+        - title
+        - price
+        - quantity
+        - description
+      properties:
+        id:
+          type: integer
+          format: int64
+        photo:
+          type: string
+        title:
+          type: string
+        price:
+          type: number
+          format: double
+        quantity:
+          type: integer
+        description:
+          type: string
+
+    OrderDTO:
+      type: object
+      required:
+        - articles
+        - date
+        - isFinalized
+        - client
+      properties:
+        id:
+          type: integer
+          format: int64
+        articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductDTO"
+        date:
+          type: string
+          pattern: '^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}$'
+        isFinalized:
+          type: boolean
+        client:
+          $ref: "#/components/schemas/BuyerDTO"
+
+    LoginDTO:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    UserConnectedDTO:
+      allOf:
+        - $ref: "#/components/schemas/AdminDTO"
+        - type: object
+          properties:
+            role:
+              $ref: "#/components/schemas/RoleEnum"
+            address:
+              type: string
+
+    RoleEnum:
+      type: string
+      enum:
+        - ADMIN
+        - BUYER
+
